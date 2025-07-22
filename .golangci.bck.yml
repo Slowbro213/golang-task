@@ -1,0 +1,104 @@
+linters-settings:
+  dupl:
+    threshold: 100
+  funlen:
+    lines: 100
+    statements: 50
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    disabled-checks:
+      - hugeParam
+      - dupImport # https://github.com/go-critic/go-critic/issues/845
+  gocyclo:
+    min-complexity: 15
+  revive:
+    confidence: 0
+  mnd:
+    checks:
+      # don't include the "operation" and "assign"
+      - argument
+      - case
+      - condition
+      - return
+  govet:
+    settings:
+      printf:
+        funcs:
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+  lll:
+    line-length: 140
+  misspell:
+    locale: US
+  nolintlint:
+    require-explanation: true
+  depguard:
+    rules:
+      prevent_unmaintained_packages:
+        list-mode: lax # allow unless explicitly denied
+        deny:
+          - pkg: io/ioutil
+            desc: "Replaced by io and os packages since Go 1.16: https://tip.golang.org/doc/go1.16#ioutil"
+          - pkg: github.com/pkg/errors
+            desc: "Deprecated: error wrapping available in standard library since Go 1.13"
+
+linters:
+  # please, do not use `enable-all`: it's deprecated and will be removed soon.
+  # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
+  disable-all: true
+  enable:
+    - bodyclose
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
+    - funlen
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - revive
+    - mnd
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - copyloopvar
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+  # don't enable:
+  # - gochecknoglobals
+  # - gocognit
+  # - godox
+  # - maligned
+  # - prealloc
+
+run:
+  tests: false
+
+issues:
+  exclude-dirs:
+    - tests
+    - migrations/list
