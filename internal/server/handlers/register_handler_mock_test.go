@@ -13,8 +13,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	models "github.com/nix-united/golang-echo-boilerplate/internal/models"
-	requests "github.com/nix-united/golang-echo-boilerplate/internal/requests"
+	models "echo-app/internal/models"
+	requests "echo-app/internal/requests"
 	gomock "go.uber.org/mock/gomock"
 )
 

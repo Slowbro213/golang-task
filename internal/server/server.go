@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/config"
+	"echo-app/internal/config"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"

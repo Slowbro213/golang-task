@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
-	"github.com/nix-united/golang-echo-boilerplate/internal/requests"
-	"github.com/nix-united/golang-echo-boilerplate/internal/responses"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/token"
+	"echo-app/internal/models"
+	"echo-app/internal/requests"
+	"echo-app/internal/responses"
+	"echo-app/internal/services/token"
 
 	safecast "github.com/ccoveille/go-safecast"
 	"github.com/golang-jwt/jwt/v5"

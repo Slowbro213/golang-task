@@ -1,14 +1,14 @@
 package routes
 
 import (
-	"github.com/nix-united/golang-echo-boilerplate/internal/repositories"
-	s "github.com/nix-united/golang-echo-boilerplate/internal/server"
-	"github.com/nix-united/golang-echo-boilerplate/internal/server/handlers"
-	"github.com/nix-united/golang-echo-boilerplate/internal/server/middleware"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/post"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/token"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/user"
-	"github.com/nix-united/golang-echo-boilerplate/internal/slogx"
+	"echo-app/internal/repositories"
+	s "echo-app/internal/server"
+	"echo-app/internal/server/handlers"
+	"echo-app/internal/server/middleware"
+	"echo-app/internal/services/post"
+	"echo-app/internal/services/token"
+	"echo-app/internal/services/user"
+	"echo-app/internal/slogx"
 
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"

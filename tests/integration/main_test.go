@@ -9,9 +9,9 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/config"
-	"github.com/nix-united/golang-echo-boilerplate/internal/db"
-	"github.com/nix-united/golang-echo-boilerplate/tests/setup"
+	"echo-app/internal/config"
+	"echo-app/internal/db"
+	"echo-app/tests/setup"
 
 	"gorm.io/gorm"
 )
@@ -63,19 +63,19 @@ func setupMain(ctx context.Context) (_ func(context.Context) error, err error) {
 		}
 	}()
 
-	mysqlConfig, mysqlShutdown, err := setup.SetupMySQL(ctx)
+	postgresConfig, postgresShutdown, err := setup.SetupPostgres(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("setup mysql: %w", err)
+		return nil, fmt.Errorf("setup postgres: %w", err)
 	}
 
-	shutdownCallbacks = append(shutdownCallbacks, mysqlShutdown)
+	shutdownCallbacks = append(shutdownCallbacks, postgresShutdown)
 
 	gormDB, err = db.NewGormDB(config.DBConfig{
-		User:     mysqlConfig.User,
-		Password: mysqlConfig.Password,
-		Name:     mysqlConfig.Name,
-		Host:     mysqlConfig.Host,
-		Port:     mysqlConfig.ExposedPort,
+		User:     postgresConfig.User,
+		Password: postgresConfig.Password,
+		Name:     postgresConfig.Name,
+		Host:     postgresConfig.Host,
+		Port:     postgresConfig.ExposedPort,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("new gorm db connection: %w", err)

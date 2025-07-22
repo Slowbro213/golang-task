@@ -9,12 +9,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nix-united/golang-echo-boilerplate/docs"
-	"github.com/nix-united/golang-echo-boilerplate/internal/config"
-	"github.com/nix-united/golang-echo-boilerplate/internal/db"
-	"github.com/nix-united/golang-echo-boilerplate/internal/server"
-	"github.com/nix-united/golang-echo-boilerplate/internal/server/routes"
-	"github.com/nix-united/golang-echo-boilerplate/internal/slogx"
+	"echo-app/docs"
+	"echo-app/internal/config"
+	"echo-app/internal/db"
+	"echo-app/internal/server"
+	"echo-app/internal/server/routes"
+	"echo-app/internal/slogx"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/google/uuid"

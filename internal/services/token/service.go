@@ -3,8 +3,8 @@ package token
 import (
 	"time"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/config"
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
+	"echo-app/internal/config"
+	"echo-app/internal/models"
 
 	"github.com/golang-jwt/jwt/v5"
 )

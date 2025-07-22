@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
-	"github.com/nix-united/golang-echo-boilerplate/internal/requests"
-	"github.com/nix-united/golang-echo-boilerplate/internal/server/builders"
+	"echo-app/internal/models"
+	"echo-app/internal/requests"
+	"echo-app/internal/server/builders"
 
 	"golang.org/x/crypto/bcrypt"
 )

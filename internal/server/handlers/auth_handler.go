@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
-	"github.com/nix-united/golang-echo-boilerplate/internal/requests"
-	"github.com/nix-united/golang-echo-boilerplate/internal/responses"
-	s "github.com/nix-united/golang-echo-boilerplate/internal/server"
-	tokenservice "github.com/nix-united/golang-echo-boilerplate/internal/services/token"
+	"echo-app/internal/models"
+	"echo-app/internal/requests"
+	"echo-app/internal/responses"
+	s "echo-app/internal/server"
+	tokenservice "echo-app/internal/services/token"
 
 	jwtGo "github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"

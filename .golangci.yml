@@ -6,7 +6,6 @@ linters:
   enable:
     - bodyclose
     - copyloopvar
-    - depguard
     - dogsled
     - dupl
     - errcheck
@@ -30,15 +29,6 @@ linters:
     - unused
     - whitespace
   settings:
-    depguard:
-      rules:
-        prevent_unmaintained_packages:
-          list-mode: lax
-          deny:
-            - pkg: io/ioutil
-              desc: 'Replaced by io and os packages since Go 1.16: https://tip.golang.org/doc/go1.16#ioutil'
-            - pkg: github.com/pkg/errors
-              desc: 'Deprecated: error wrapping available in standard library since Go 1.13'
     dupl:
       threshold: 100
     funlen:

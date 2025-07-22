@@ -20,6 +20,6 @@ RUN chmod +x /wait
 CMD ["sh", "-c", "\
   swag init -g cmd/service/main.go && \
   /wait && \
-  go tool goose -dir './migrations' mysql ${DB_CONNECTION} up && \
+  go tool goose -dir './migrations' postgres ${DB_CONNECTION} up && \
   CompileDaemon --build='go build cmd/service/main.go' --command='./main' --color \
 "]

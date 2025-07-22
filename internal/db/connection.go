@@ -3,14 +3,14 @@ package db
 import (
 	"fmt"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/config"
+	"echo-app/internal/config"
 
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func NewGormDB(cfg config.DBConfig) (*gorm.DB, error) {
-	db, err := gorm.Open(mysql.Open(dsn(cfg)), &gorm.Config{})
+func NewGormDB(cfg config.DB) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(dsn(cfg)), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("open db connection: %w", err)
 	}
@@ -18,9 +18,9 @@ func NewGormDB(cfg config.DBConfig) (*gorm.DB, error) {
 	return db, nil
 }
 
-func dsn(c config.DBConfig) string {
+func dsn(c config.DB) string {
 	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		c.User, c.Password, c.Host, c.Port, c.Name,
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC",
+		c.Host, c.User, c.Password, c.Name, c.Port,
 	)
 }

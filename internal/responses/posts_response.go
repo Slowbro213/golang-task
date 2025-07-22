@@ -1,7 +1,7 @@
 package responses
 
 import (
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
+	"echo-app/internal/models"
 )
 
 type PostResponse struct {

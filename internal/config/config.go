@@ -1,15 +1,19 @@
 package config
 
-import "github.com/nix-united/golang-echo-boilerplate/internal/slogx"
-
 type Config struct {
-	Logger slogx.Config
-	Auth   AuthConfig
-	DB     DBConfig
-	HTTP   HTTPConfig
+	Logger Log
+	Auth   Auth
+	DB     DB
+	HTTP   HTTP
 }
 
-type DBConfig struct {
+type Log struct {
+	Application string `env:"LOG_APPLICATION"`
+	File        string `env:"LOG_FILE"`
+	Level       string `env:"LOG_LEVEL"`
+	AddSource   bool   `env:"LOG_ADD_SOURCE"`
+}
+type DB struct {
 	User     string `env:"DB_USER"`
 	Password string `env:"DB_PASSWORD"`
 	Driver   string `env:"DB_DRIVER"`
@@ -18,12 +22,12 @@ type DBConfig struct {
 	Port     string `env:"DB_PORT"`
 }
 
-type AuthConfig struct {
+type Auth struct {
 	AccessSecret  string `env:"ACCESS_SECRET"`
 	RefreshSecret string `env:"REFRESH_SECRET"`
 }
 
-type HTTPConfig struct {
+type HTTP struct {
 	Host       string `env:"HOST"`
 	Port       string `env:"PORT"`
 	ExposePort string `env:"EXPOSE_PORT"`

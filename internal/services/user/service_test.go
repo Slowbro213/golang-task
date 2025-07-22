@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
-	"github.com/nix-united/golang-echo-boilerplate/internal/requests"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/user"
+	"echo-app/internal/models"
+	"echo-app/internal/requests"
+	"echo-app/internal/services/user"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

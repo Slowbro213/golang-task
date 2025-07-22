@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
-	"github.com/nix-united/golang-echo-boilerplate/internal/requests"
+	"echo-app/internal/models"
+	"echo-app/internal/requests"
 )
 
 //go:generate go tool mockgen -source=$GOFILE -destination=service_mock_test.go -package=${GOPACKAGE}_test -typed=true

@@ -3,8 +3,8 @@ package integration
 import (
 	"testing"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
-	"github.com/nix-united/golang-echo-boilerplate/internal/repositories"
+	"echo-app/internal/models"
+	"echo-app/internal/repositories"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

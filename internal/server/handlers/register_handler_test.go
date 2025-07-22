@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
-	"github.com/nix-united/golang-echo-boilerplate/internal/requests"
-	"github.com/nix-united/golang-echo-boilerplate/internal/server/handlers"
+	"echo-app/internal/models"
+	"echo-app/internal/requests"
+	"echo-app/internal/server/handlers"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
