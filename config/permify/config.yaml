@@ -1,0 +1,58 @@
+server:
+  rate_limit: 100
+  http:
+    enabled: true
+    port: 3476
+    tls:
+      enabled: false
+  grpc:
+    port: 3478
+    tls:
+      enabled: false
+
+logger:
+  level: debug
+
+profiler:
+  enabled: false
+
+authn:
+  enabled: false
+
+tracer:
+  enabled: false
+
+meter:
+  enabled: false
+
+service:
+  circuit_breaker: false
+  watch:
+    enabled: false
+  schema:
+    cache:
+      number_of_counters: 1000
+      max_cost: 10MiB
+  permission:
+    bulk_limit: 100
+    concurrency_limit: 100
+    cache:
+      number_of_counters: 10000
+      max_cost: 10MiB
+
+database:
+  engine: postgres
+  uri: postgresql://local_user:password@postgres:5432/permify?sslmode=disable
+  auto_migrate: true
+  max_open_connections: 20
+  max_idle_connections: 1
+  max_connection_lifetime: 300s
+  max_connection_idle_time: 60s
+  garbage_collection:
+    enabled: true
+    interval: 200h
+    window: 200h
+    timeout: 5m
+
+distributed:
+  enabled: false

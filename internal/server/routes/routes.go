@@ -6,13 +6,11 @@ import (
 	"echo-app/internal/server/handlers"
 	"echo-app/internal/server/middleware"
 	"echo-app/internal/services/post"
-	"echo-app/internal/services/token"
 	"echo-app/internal/services/user"
 	"echo-app/internal/slogx"
+	"log/slog"
 
-	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
-	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
@@ -24,27 +22,30 @@ func ConfigureRoutes(tracer slogx.TraceStarter, server *s.Server) {
 	postService := post.NewService(postRepository)
 
 	postHandler := handlers.NewPostHandlers(postService)
-	authHandler := handlers.NewAuthHandler(userService, server)
-	registerHandler := handlers.NewRegisterHandler(userService)
+
+	authHandler, err := handlers.NewAuthHandler(server, userService, userRepository, &server.Config.Auth)
+
+	if err != nil {
+		slog.Error("auth init error")
+	}
 
 	server.Echo.Use(middleware.NewRequestLogger(tracer))
 
 	server.Echo.GET("/swagger/*", echoSwagger.WrapHandler)
 
-	server.Echo.POST("/login", authHandler.Login)
-	server.Echo.POST("/register", registerHandler.Register)
-	server.Echo.POST("/refresh", authHandler.RefreshToken)
-
 	r := server.Echo.Group("", middleware.NewRequestDebugger())
 
-	// Configure middleware with the custom claims type
-	config := echojwt.Config{
-		NewClaimsFunc: func(_ echo.Context) jwt.Claims {
-			return new(token.JwtCustomClaims)
-		},
-		SigningKey: []byte(server.Config.Auth.AccessSecret),
-	}
-	r.Use(echojwt.WithConfig(config))
+	r.GET("/login", authHandler.InitiateLogin)
+	r.GET("/callback", authHandler.HandleCallback)
+	r.POST("/logout", authHandler.HandleLogout)
+
+	// Protected routes with JWT middleware
+	protected := r.Group("")
+	protected.Use(echojwt.WithConfig(echojwt.Config{
+		SigningKey:  []byte(server.Config.Auth.OIDCClientSecret),
+		TokenLookup: "header:Authorization,cookie:access_token",
+		ContextKey:  "user",
+	}))
 
 	r.GET("/posts", postHandler.GetPosts)
 	r.POST("/posts", postHandler.CreatePost)

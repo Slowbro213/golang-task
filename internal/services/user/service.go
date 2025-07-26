@@ -4,29 +4,22 @@ import (
 	"context"
 	"fmt"
 
-	"echo-app/internal/models"
+	"echo-app/internal/repositories"
 	"echo-app/internal/requests"
 	"echo-app/internal/server/builders"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-//go:generate go tool mockgen -source=$GOFILE -destination=service_mock_test.go -package=${GOPACKAGE}_test -typed=true
-
-type userRepository interface {
-	Create(ctx context.Context, user *models.User) error
-	GetByID(ctx context.Context, id uint) (models.User, error)
-	GetUserByEmail(ctx context.Context, email string) (models.User, error)
-}
-
 type Service struct {
-	userRepository userRepository
+	userRepository *repositories.UserRepository
 }
 
-func NewService(userRepository userRepository) *Service {
+func NewService(userRepository *repositories.UserRepository) *Service {
 	return &Service{userRepository: userRepository}
 }
 
+// Register handles both traditional registration and OIDC user creation
 func (s *Service) Register(ctx context.Context, request *requests.RegisterRequest) error {
 	encryptedPassword, err := bcrypt.GenerateFromPassword(
 		[]byte(request.Password),
@@ -49,20 +42,4 @@ func (s *Service) Register(ctx context.Context, request *requests.RegisterReques
 	return nil
 }
 
-func (s *Service) GetByID(ctx context.Context, id uint) (models.User, error) {
-	user, err := s.userRepository.GetByID(ctx, id)
-	if err != nil {
-		return models.User{}, fmt.Errorf("get user by id from repository: %w", err)
-	}
-
-	return user, nil
-}
-
-func (s *Service) GetUserByEmail(ctx context.Context, email string) (models.User, error) {
-	user, err := s.userRepository.GetUserByEmail(ctx, email)
-	if err != nil {
-		return models.User{}, fmt.Errorf("get user by email from repository: %w", err)
-	}
-
-	return user, nil
-}
+// GetOrCreateUserFromOIDC handles OIDC user authentication

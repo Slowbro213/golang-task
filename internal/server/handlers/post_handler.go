@@ -8,10 +8,8 @@ import (
 	"echo-app/internal/models"
 	"echo-app/internal/requests"
 	"echo-app/internal/responses"
-	"echo-app/internal/services/token"
 
 	safecast "github.com/ccoveille/go-safecast"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
 
@@ -54,14 +52,11 @@ func (p *PostHandlers) CreatePost(c echo.Context) error {
 		return responses.ErrorResponse(c, http.StatusBadRequest, "Required fields are empty")
 	}
 
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*token.JwtCustomClaims)
-	id := claims.ID
 
 	post := &models.Post{
 		Title:   createPostRequest.Title,
 		Content: createPostRequest.Content,
-		UserID:  id,
+		UserID:  1,
 	}
 
 	if err := p.postService.Create(c.Request().Context(), post); err != nil {

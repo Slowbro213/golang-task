@@ -12,6 +12,7 @@ import (
 	"echo-app/docs"
 	"echo-app/internal/config"
 	"echo-app/internal/db"
+	"echo-app/internal/permify"
 	"echo-app/internal/server"
 	"echo-app/internal/server/routes"
 	"echo-app/internal/slogx"
@@ -60,14 +61,28 @@ func run() error {
 		return fmt.Errorf("init logger: %w", err)
 	}
 
+	err := permify.InitClient()
+
+	if err != nil {
+		return fmt.Errorf("Error initng Permify Module: %v", err)
+	}
+
+
+
+	// ✅ Setup DB and server after
 	gormDB, err := db.NewGormDB(cfg.DB)
 	if err != nil {
 		return fmt.Errorf("new db connection: %w", err)
 	}
 
 	app := server.NewServer(echo.New(), gormDB, &cfg)
-
 	routes.ConfigureRoutes(slogx.NewTraceStarter(uuid.NewV7), app)
+
+	schemaVer, err := permify.UploadSchema(context.Background(),"t1")
+	if err != nil {
+		return fmt.Errorf("error on Upload Schema: %w", err)
+	}
+	slog.Info("✅ Permify schema uploaded", "version", schemaVer)
 
 	go func() {
 		if err = app.Start(cfg.HTTP.Port); err != nil {
@@ -75,6 +90,7 @@ func run() error {
 		}
 	}()
 
+	// Wait for shutdown signal
 	shutdownChannel := make(chan os.Signal, 1)
 	signal.Notify(shutdownChannel, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM)
 	<-shutdownChannel
@@ -94,6 +110,7 @@ func run() error {
 	if err := dbConnection.Close(); err != nil {
 		return fmt.Errorf("close db connection: %w", err)
 	}
+
 
 	return nil
 }

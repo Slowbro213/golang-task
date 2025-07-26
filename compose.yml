@@ -18,38 +18,114 @@ services:
     networks:
       - echo-demo-stack
 
- 
   postgres:
     image: postgres:15
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    volumes:
+      - database_pg:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-    ports:
-      - ${EXPOSE_DB_PORT}:${DB_PORT}
-    volumes:
-      - database_pg:/var/lib/postgresql/data
+      POSTGRES_MULTIPLE_DATABASES: ${DB_NAME},permify  # Add this line
+    env_file:
+      - .env
     networks:
       - echo-demo-stack
 
+  redis:
+    image: redis:alpine
+    command: --save 60 1 --loglevel warning
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - redis:/data
+    networks:
+      - echo-demo-stack
 
-  
   permify:
-    image: ghcr.io/permify/permify:latest
+    image: ghcr.io/permify/permify:v1.4.2
     ports:
-      - "3476:3476"
-      - "3478:3478"
-    environment:
-      PERSISTENCE: postgres
-      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?sslmode=disable
+      - "3476:3476"  # HTTP
+      - "3478:3478"  # gRPC
+    command: serve
+    volumes:
+      - ./config/permify/config.yaml:/config/config.yaml
     depends_on:
       - postgres
     networks:
       - echo-demo-stack
 
+  authentik-server:
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG:-2025.6.4}
+    restart: unless-stopped
+    command: server
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: ${DB_HOST}
+      AUTHENTIK_POSTGRESQL__USER: ${DB_USER}
+      AUTHENTIK_POSTGRESQL__NAME: ${DB_NAME}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./media:/media
+      - ./custom-templates:/templates
+    env_file:
+      - .env
+    ports:
+      - "${COMPOSE_PORT_HTTP:-9000}:9000"
+      - "${COMPOSE_PORT_HTTPS:-9443}:9443"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - echo-demo-stack
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG:-2025.6.4}
+    restart: unless-stopped
+    command: worker
+    user: root
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: ${DB_HOST}
+      AUTHENTIK_POSTGRESQL__USER: ${DB_USER}
+      AUTHENTIK_POSTGRESQL__NAME: ${DB_NAME}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./media:/media
+      - ./certs:/certs
+      - ./custom-templates:/templates
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - echo-demo-stack
 
 volumes:
   database_pg:
+  redis:
 
 networks:
   echo-demo-stack:

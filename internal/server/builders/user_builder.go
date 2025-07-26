@@ -3,9 +3,10 @@ package builders
 import "echo-app/internal/models"
 
 type UserBuilder struct {
-	email    string
-	name     string
-	password string
+	email       string
+	name        string
+	password    string
+	oidcsubject string
 }
 
 func NewUserBuilder() *UserBuilder {
@@ -24,6 +25,11 @@ func (userBuilder *UserBuilder) SetName(name string) (u *UserBuilder) {
 
 func (userBuilder *UserBuilder) SetPassword(password string) (u *UserBuilder) {
 	userBuilder.password = password
+	return userBuilder
+}
+
+func (userBuilder *UserBuilder) SetOIDCSubject(sub string) *UserBuilder {
+	userBuilder.oidcsubject = sub
 	return userBuilder
 }
 

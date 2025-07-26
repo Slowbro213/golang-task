@@ -23,8 +23,11 @@ type DB struct {
 }
 
 type Auth struct {
-	AccessSecret  string `env:"ACCESS_SECRET"`
-	RefreshSecret string `env:"REFRESH_SECRET"`
+	OIDCIssuer          string
+	OIDCClientID        string
+	OIDCClientSecret    string
+	OIDCRedirectURL     string
+	OIDCSuccessRedirect string
 }
 
 type HTTP struct {

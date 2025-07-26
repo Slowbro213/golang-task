@@ -12,6 +12,15 @@ CREATE TABLE users (
 -- +goose StatementEnd
 
 -- +goose StatementBegin
+CREATE TABLE domains (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+-- +goose StatementEnd
+
+
+-- +goose StatementBegin
 CREATE TABLE posts (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -25,6 +34,12 @@ CREATE TABLE posts (
         ON DELETE CASCADE
 );
 -- +goose StatementEnd
+
+-- +goose StatementBegin
+ALTER TABLE users
+ADD COLUMN domain_id UUID REFERENCES domains(id);
+-- +goose StatementEnd
+
 
 -- +goose Down
 -- +goose StatementBegin
